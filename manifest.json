@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Area Manager Andrea",
+  "version": "1.0",
+  "description": "Gestore di aree di lavoro con chiusura schede in background.",
+  "permissions": [
+    "tabs",
+    "storage",
+    "contextualIdentities",
+    "sessions"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Cambia Area"
+  }
+}
