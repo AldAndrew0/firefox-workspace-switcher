@@ -1,26 +1,27 @@
 {
   "manifest_version": 3,
   "name": "Workspace Tab Master",
-  "version": "1.2",
+  "version": "2.0",
+  "description": "Organizza le schede in aree di lavoro. Passa da lavoro a svago in un clic, con supporto ai gruppi nativi di Firefox.",
   "permissions": [
     "tabs",
     "tabGroups",
     "storage",
-    "sessions",
-    "browserSettings",
     "theme"
   ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "popup/popup.html"
+    "default_popup": "popup/popup.html",
+    "default_title": "Workspace Tab Master"
   },
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
   },
   "background": {
-    "scripts": ["background/background.js"]
+    "scripts": [
+      "modules/storage-api.js",
+      "background/background.js"
+    ]
   }
 }

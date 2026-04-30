@@ -1,28 +1,244 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>Configurazione Workspace</title>
-    <link rel="stylesheet" href="options.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workspace Tab Master — Dashboard</title>
+  <link rel="stylesheet" href="options.css">
 </head>
 <body>
-    <h1>Configurazione Workspace</h1>
-    
-    <div id="settings-check">
-        <div id="session-warning" class="warning-box">
-            ⚠️ <strong>Attenzione:</strong> Attiva "Ripristina sessione precedente" nelle impostazioni di Firefox 
-            <span class="info-icon" title="Menu Firefox > Impostazioni > Generali > Avvio > Ripristina la sessione precedente">i</span>
-        </div>
-    </div>
-    
-    <div class="workspace-builder">
-        <h2>I tuoi Gruppi</h2>
-        <div id="groups-list">
-            <!-- Caricato dinamicamente da JS -->
-        </div>
-        <button id="add-group" class="btn-main">+ Crea Nuovo Gruppo</button>
+
+  <!-- Sidebar sinistra -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <rect x="1.5" y="1.5" width="7" height="7" rx="2" fill="currentColor" opacity="0.9"/>
+        <rect x="11.5" y="1.5" width="7" height="7" rx="2" fill="currentColor" opacity="0.7"/>
+        <rect x="1.5" y="11.5" width="7" height="7" rx="2" fill="currentColor" opacity="0.7"/>
+        <rect x="11.5" y="11.5" width="7" height="7" rx="2" fill="currentColor" opacity="0.4"/>
+      </svg>
+      <span>Workspace Manager</span>
     </div>
 
-    <script src="options.js"></script>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Aree</div>
+      <ul id="sidebar-ws-list" class="sidebar-ws-list">
+        <!-- Generato dinamicamente -->
+      </ul>
+      <button class="btn-add-ws" id="btn-add-workspace">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Nuova area
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-nav-btn" id="btn-nav-settings" data-section="settings">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Impostazioni
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenuto principale -->
+  <main class="main-content">
+
+    <!-- Vista: nessuna area selezionata (home) -->
+    <section id="view-home" class="view active">
+      <div class="home-hero">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" opacity="0.15">
+          <rect x="4" y="4" width="24" height="24" rx="6" fill="currentColor"/>
+          <rect x="36" y="4" width="24" height="24" rx="6" fill="currentColor" opacity="0.8"/>
+          <rect x="4" y="36" width="24" height="24" rx="6" fill="currentColor" opacity="0.8"/>
+          <rect x="36" y="36" width="24" height="24" rx="6" fill="currentColor" opacity="0.5"/>
+        </svg>
+        <h2>Workspace Tab Master</h2>
+        <p>Seleziona un'area dalla barra laterale per gestirla,<br>oppure crea la tua prima area di lavoro.</p>
+        <button class="btn-primary" id="btn-home-create">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Crea prima area
+        </button>
+      </div>
+    </section>
+
+    <!-- Vista: dettaglio workspace -->
+    <section id="view-workspace" class="view" hidden>
+      <div class="view-header">
+        <div class="ws-header-icon" id="detail-icon">📁</div>
+        <div class="ws-header-info">
+          <h1 id="detail-name" class="editable-title" title="Clicca per rinominare">Workspace</h1>
+          <p id="detail-meta" class="detail-meta">0 schede · 0 gruppi</p>
+        </div>
+        <div class="ws-header-actions">
+          <button class="btn-secondary" id="btn-capture-to-ws">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1v8M5 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12h12M2 15h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Cattura schede correnti
+          </button>
+          <button class="btn-primary" id="btn-activate-ws">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l7 5-7 5V3z" fill="currentColor"/>
+            </svg>
+            Attiva area
+          </button>
+        </div>
+      </div>
+
+      <!-- Personalizzazione -->
+      <div class="customization-row" id="customization-row">
+        <div class="custom-section">
+          <label class="custom-label">Icona</label>
+          <div class="icon-picker" id="icon-picker">
+            <!-- Generato dinamicamente -->
+          </div>
+        </div>
+        <div class="custom-section">
+          <label class="custom-label">Colore</label>
+          <div class="color-picker" id="color-picker">
+            <!-- Generato dinamicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Schede salvate -->
+      <div class="tabs-section">
+        <div class="section-header">
+          <h3>Schede salvate</h3>
+          <span id="tab-count-badge" class="count-badge">0</span>
+        </div>
+        <div id="tabs-list" class="tabs-list">
+          <!-- Generato dinamicamente -->
+        </div>
+        <div id="tabs-empty" class="tabs-empty" hidden>
+          <p>Nessuna scheda salvata.</p>
+          <p class="hint">Usa "Cattura schede correnti" per salvare le schede aperte.</p>
+        </div>
+      </div>
+
+      <!-- Zona pericolosa -->
+      <div class="danger-zone">
+        <button class="btn-danger" id="btn-delete-ws">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+            <path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Elimina area
+        </button>
+      </div>
+    </section>
+
+    <!-- Vista: impostazioni -->
+    <section id="view-settings" class="view" hidden>
+      <div class="view-header">
+        <h1>Impostazioni</h1>
+      </div>
+
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>Comportamento</h3>
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong>Salvataggio automatico al cambio area</strong>
+              <p>Salva automaticamente le schede aperte quando passi a un'altra area</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="setting-auto-save" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <strong>Ripristina ultima area all'avvio</strong>
+              <p>Apri automaticamente l'ultima area usata quando avvii Firefox</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="setting-restore-on-start">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>Dati</h3>
+          <div class="settings-actions">
+            <button class="btn-secondary" id="btn-export-data">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M8 1v8M5 6l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Esporta workspace (JSON)
+            </button>
+            <button class="btn-secondary" id="btn-import-data">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                <path d="M8 9V1M5 4l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12v2h12v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Importa workspace (JSON)
+            </button>
+            <input type="file" id="import-file-input" accept=".json" hidden>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>Informazioni</h3>
+          <p class="info-text">
+            <strong>Workspace Tab Master</strong> v2.0<br>
+            Organizza le tue schede in aree di lavoro separate.<br>
+            Supporta i gruppi nativi di Firefox 131+.
+          </p>
+          <p class="info-text hint" style="margin-top:8px">
+            💡 Suggerimento: attiva "Ripristina sessione precedente" nelle impostazioni di Firefox per un'esperienza migliore.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: crea nuova area -->
+  <div id="modal-create" class="modal-overlay" hidden>
+    <div class="modal">
+      <h2>Nuova area di lavoro</h2>
+
+      <div class="modal-icon-preview">
+        <span id="modal-icon-preview">📁</span>
+      </div>
+
+      <div class="form-row">
+        <label for="modal-ws-name">Nome</label>
+        <input type="text" id="modal-ws-name" placeholder="Es. Lavoro, Svago, Progetti..." maxlength="30" autocomplete="off">
+      </div>
+
+      <div class="form-row">
+        <label>Icona</label>
+        <div class="icon-grid" id="modal-icon-grid">
+          <!-- Generato dinamicamente -->
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Colore</label>
+        <div class="color-grid" id="modal-color-grid">
+          <!-- Generato dinamicamente -->
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modal-cancel">Annulla</button>
+        <button class="btn-primary" id="modal-confirm">Crea area</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../modules/storage-api.js"></script>
+  <script src="../modules/theme-api.js"></script>
+  <script src="options.js"></script>
 </body>
 </html>
