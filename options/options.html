@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <title>Configurazione Workspace</title>
     <link rel="stylesheet" href="options.css">
 </head>
 <body>
     <h1>Configurazione Workspace</h1>
+    
     <div id="settings-check">
-        <p id="session-warning" style="color: red; display: none;">
-            ⚠️ Attenzione: Attiva "Ripristina sessione precedente" nelle impostazioni di Firefox per un corretto funzionamento.
-        </p>
+        <div id="session-warning" class="warning-box">
+            ⚠️ <strong>Attenzione:</strong> Attiva "Ripristina sessione precedente" nelle impostazioni di Firefox per un corretto funzionamento.
+        </div>
     </div>
     
     <div class="workspace-builder">
         <h2>I tuoi Gruppi</h2>
-        <div id="groups-list"></div>
-        <button id="add-group">+ Crea Nuovo Gruppo</button>
+        <div id="groups-list">
+            <!-- I gruppi appariranno qui -->
+        </div>
+        <button id="add-group" class="btn-main">+ Crea Nuovo Gruppo</button>
     </div>
 
     <script src="options.js"></script>
