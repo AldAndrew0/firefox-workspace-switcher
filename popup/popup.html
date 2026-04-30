@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="popup.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../options/options.css">
+    <style>
+        body { width: 300px; padding: 15px; }
+        .group-list-popup { display: flex; flex-direction: column; gap: 8px; }
+        .popup-btn { width: 100%; text-align: left; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Area Manager</h2>
-        <hr>
-        <button id="work-btn" class="btn work">💻 Area Lavoro</button>
-        <button id="fun-btn" class="btn fun">🎮 Area Svago</button>
-        <p id="status"></p>
+    <h3>Workspace Manager</h3>
+    <div id="group-list-popup" class="group-list-popup">
+        <!-- Generato dinamicamente -->
     </div>
-    <script src="popup.js"></script>
+    <hr>
+    <button class="secondary" id="open-settings" style="width:100%">Gestisci Aree</button>
 </body>
+<script src="popup.js"></script>
 </html>

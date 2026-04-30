@@ -1,53 +1,44 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    await refreshDashboard();
-});
+document.addEventListener('DOMContentLoaded', refreshDashboard);
 
 async function refreshDashboard() {
     const data = await browser.storage.local.get("workspaces");
-    renderGroups(data.workspaces || {});
-}
-
-function renderGroups(workspaces) {
+    const workspaces = data.workspaces || {};
     const list = document.getElementById('groups-list');
     list.innerHTML = '';
-    const keys = Object.keys(workspaces);
-    
-    if (keys.length === 0) {
-        list.innerHTML = '<p style="color: #888;">Nessuna area creata. Clicca sul tasto sotto!</p>';
-        return;
-    }
 
-    keys.forEach(name => {
-        const workspace = workspaces[name];
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-            <div class="group-info">
-                <strong>${name}</strong> 
-                <div style="font-size: 0.8em; color: #888;">${workspace.tabs.length} schede salvate</div>
-            </div>
-            <div class="group-actions">
-                <button style="background: #10b981; color: white;" onclick="restoreWorkspace('${name}')">Attiva</button>
-                <button style="background: #3b82f6; color: white;" onclick="saveCurrentTo('${name}')">Aggiorna</button>
-                <button style="background: #ef4444; color: white;" onclick="deleteGroup('${name}')">Elimina</button>
+    Object.keys(workspaces).forEach(name => {
+        const ws = workspaces[name];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div><strong>${name}</strong> <span style="opacity:0.7">(${ws.tabs.length} schede)</span></div>
+            <div>
+                <button class="activate-btn" data-name="${name}">Attiva</button>
+                <button class="secondary update-btn" data-name="${name}">Aggiorna</button>
+                <button class="danger delete-btn" data-name="${name}">Elimina</button>
             </div>
         `;
-        list.appendChild(div);
+        list.appendChild(card);
     });
+
+    // Event Listeners Dinamici
+    document.querySelectorAll('.activate-btn').forEach(b => b.onclick = () => restoreWorkspace(b.dataset.name));
+    document.querySelectorAll('.update-btn').forEach(b => b.onclick = () => saveCurrentTo(b.dataset.name));
+    document.querySelectorAll('.delete-btn').forEach(b => b.onclick = () => deleteGroup(b.dataset.name));
 }
 
-document.getElementById('add-group').addEventListener('click', async () => {
-    const name = prompt("Nome area (es. Lavoro, Svago):");
+document.getElementById('add-group').onclick = async () => {
+    const name = prompt("Nome della nuova area:");
     if (name) {
         const data = await browser.storage.local.get("workspaces");
         const workspaces = data.workspaces || {};
         workspaces[name] = { tabs: [], groups: [] };
         await browser.storage.local.set({ workspaces });
-        await refreshDashboard();
+        refreshDashboard();
     }
-});
+};
 
-async function saveCurrentTo(workspaceName) {
+async function saveCurrentTo(name) {
     const tabs = await browser.tabs.query({ currentWindow: true });
     let groupsData = [];
     try {
@@ -59,16 +50,16 @@ async function saveCurrentTo(workspaceName) {
     const data = await browser.storage.local.get("workspaces");
     const workspaces = data.workspaces || {};
     
-    workspaces[workspaceName] = { tabs: tabsData, groups: groupsData };
+    workspaces[name] = { tabs: tabsData, groups: groupsData };
     await browser.storage.local.set({ workspaces });
-    alert(`Area "${workspaceName}" salvata!`);
-    await refreshDashboard();
+    alert(`Area "${name}" aggiornata!`);
+    refreshDashboard();
 }
 
 async function restoreWorkspace(name) {
     const data = await browser.storage.local.get("workspaces");
     const workspace = data.workspaces[name];
-    if (!workspace) return;
+    if (!workspace || workspace.tabs.length === 0) return;
 
     const currentTabs = await browser.tabs.query({ currentWindow: true });
     const optionsTab = await browser.tabs.getCurrent();
@@ -93,10 +84,10 @@ async function restoreWorkspace(name) {
 }
 
 async function deleteGroup(name) {
-    if (confirm(`Eliminare ${name}?`)) {
+    if (confirm(`Eliminare l'area "${name}"?`)) {
         const data = await browser.storage.local.get("workspaces");
         delete data.workspaces[name];
         await browser.storage.local.set({ workspaces: data.workspaces });
-        await refreshDashboard();
+        refreshDashboard();
     }
 }
