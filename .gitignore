@@ -1,0 +1,11 @@
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Firefox / Sviluppo
+*.log
+.DS_Store
