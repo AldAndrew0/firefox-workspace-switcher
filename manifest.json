@@ -1,16 +1,22 @@
 {
   "manifest_version": 3,
-  "name": "Area Manager Andrea",
-  "version": "1.0",
-  "description": "Gestore di aree di lavoro con chiusura schede in background.",
+  "name": "Workspace Tab Master",
+  "version": "1.1",
   "permissions": [
     "tabs",
+    "tabGroups",
     "storage",
-    "contextualIdentities",
-    "sessions"
+    "sessions",
+    "browserSettings"
   ],
   "action": {
-    "default_popup": "popup/popup.html",
-    "default_title": "Cambia Area"
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "scripts": ["background/background.js"]
   }
 }
