@@ -11,17 +11,17 @@
   ],
   "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "html/popup.html",
     "default_title": "Workspace Tab Master"
   },
   "options_ui": {
-    "page": "options/options.html",
+    "page": "html/options.html",
     "open_in_tab": true
   },
   "background": {
     "scripts": [
-      "modules/storage-api.js",
-      "background/background.js"
+      "js/modules/storage-api.js",
+      "js/pages/background.js"
     ]
   }
 }

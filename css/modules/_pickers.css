@@ -1,0 +1,49 @@
+/* ============================================================
+   _pickers.css — Selettori icona e colore
+   Importato da: css/pages/options.css
+   Usato in: dettaglio workspace + modal crea area
+   Richiede: --accent, --card-bg, --card-hover, --text,
+             --transition (dalla pagina)
+   ============================================================ */
+
+/* ── Picker icona ── */
+.icon-option {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: var(--card-bg);
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+}
+.icon-option:hover  { background: var(--card-hover); }
+.icon-option.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ── Picker colore ── */
+.color-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.color-dot:hover    { transform: scale(1.15); }
+.color-dot.selected { border-color: var(--text); transform: scale(1.1); }
+
+/* ── Contenitori picker ── */
+.icon-picker,
+.color-picker,
+.icon-grid,
+.color-grid {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
