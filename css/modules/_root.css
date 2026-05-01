@@ -10,9 +10,18 @@
   padding: 0;
 }
 
+/* Fix critico: display:flex/grid nei componenti sovrascrive [hidden].
+   Questo garantisce che hidden funzioni sempre, ovunque. */
+[hidden] { display: none !important; }
+
 /* ── Variabili condivise ── */
 :root {
-  /* Accent: variabili Mozilla native, disponibili in tutti i contesti dell'estensione */
+  /* Dice al browser che supportiamo sia light che dark:
+     le system colors (Field, Canvas, ecc.) si adattano automaticamente
+     al tema OS/Firefox anche senza ThemeAPI */
+  color-scheme: light dark;
+
+  /* Accent: variabili Mozilla native */
   --accent:     -moz-accent-color;
   --accent-txt: -moz-accent-color-text;
 
@@ -24,5 +33,5 @@
 html {
   font-family: var(--font);
   line-height: 1.5;
-  -webkit-font-smoothing: antial
+  -webkit-font-smoothing: antialiased;
 }

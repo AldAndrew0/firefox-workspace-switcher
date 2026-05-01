@@ -1,6 +1,10 @@
 /**
  * ThemeAPI — Adattamento dinamico al tema di Firefox
- * Legge browser.theme.getCurrent() e applica i colori come variabili CSS
+ *
+ * Strategia a 3 livelli:
+ * 1. browser.theme.getCurrent() → colori espliciti del tema
+ * 2. prefers-color-scheme       → preferenza OS/Firefox
+ * 3. color-scheme: light dark   → system colors CSS (Field, Canvas, ecc.)
  */
 
 const ThemeAPI = (() => {
@@ -17,7 +21,7 @@ const ThemeAPI = (() => {
   }
 
   function luminance(color) {
-    if (!color) return 0.5;
+    if (!color) return null; // null = non disponibile
     let r, g, b;
     if (Array.isArray(color)) {
       [r, g, b] = color;
@@ -27,7 +31,7 @@ const ThemeAPI = (() => {
       g = parseInt(hex.substr(2, 2), 16);
       b = parseInt(hex.substr(4, 2), 16);
     } else {
-      return 0.5;
+      return null;
     }
     return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   }
@@ -36,23 +40,24 @@ const ThemeAPI = (() => {
     const c = theme.colors || {};
     const root = document.documentElement;
 
+    // Applica le variabili CSS del tema
     const map = {
-      '--t-popup':         c.popup,
-      '--t-popup-text':    c.popup_text,
-      '--t-popup-border':  c.popup_border,
-      '--t-popup-hl':      c.popup_highlight,
-      '--t-popup-hl-txt':  c.popup_highlight_text,
-      '--t-toolbar':       c.toolbar,
-      '--t-toolbar-txt':   c.toolbar_text,
-      '--t-frame':         c.frame,
-      '--t-sidebar':       c.sidebar,
-      '--t-sidebar-txt':   c.sidebar_text,
-      '--t-sidebar-brd':   c.sidebar_border,
-      '--t-icons':         c.icons,
-      '--t-btn-hover':     c.button_background_hover,
-      '--t-btn-active':    c.button_background_active,
-      '--t-tab-line':      c.tab_line,
-      '--t-ntp-bg':        c.ntp_background,
+      '--t-popup':        c.popup,
+      '--t-popup-text':   c.popup_text,
+      '--t-popup-border': c.popup_border,
+      '--t-popup-hl':     c.popup_highlight,
+      '--t-popup-hl-txt': c.popup_highlight_text,
+      '--t-toolbar':      c.toolbar,
+      '--t-toolbar-txt':  c.toolbar_text,
+      '--t-frame':        c.frame,
+      '--t-sidebar':      c.sidebar,
+      '--t-sidebar-txt':  c.sidebar_text,
+      '--t-sidebar-brd':  c.sidebar_border,
+      '--t-icons':        c.icons,
+      '--t-btn-hover':    c.button_background_hover,
+      '--t-btn-active':   c.button_background_active,
+      '--t-tab-line':     c.tab_line,
+      '--t-ntp-bg':       c.ntp_background,
     };
 
     for (const [prop, val] of Object.entries(map)) {
@@ -60,9 +65,21 @@ const ThemeAPI = (() => {
       if (str) root.style.setProperty(prop, str);
     }
 
-    // Rileva dark/light in base al colore di sfondo popup o toolbar
+    // Rileva dark/light:
+    // Usa i colori del tema se disponibili, altrimenti prefers-color-scheme
     const bgColor = c.popup || c.toolbar || c.frame;
-    const isDark = luminance(bgColor) < 0.5;
+    const lum = luminance(bgColor);
+
+    let isDark;
+    if (lum !== null) {
+      // Il tema fornisce un colore: usalo per decidere
+      isDark = lum < 0.5;
+    } else {
+      // Il tema non fornisce colori (es. temi built-in di Firefox che
+      // delegano tutto a prefers-color-scheme): usa la preferenza OS
+      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
     root.setAttribute('data-theme', isDark ? 'dark' : 'light');
   }
 
@@ -75,11 +92,11 @@ const ThemeAPI = (() => {
         applyTheme(updated);
       });
     } catch (e) {
-      // Fallback: usa prefers-color-scheme
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+      // Fallback completo: solo prefers-color-scheme
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      document.documentElement.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
+      mq.addEventListener('change', ev => {
+        document.documentElement.setAttribute('data-theme', ev.matches ? 'dark' : 'light');
       });
     }
   }
