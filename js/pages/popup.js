@@ -167,7 +167,7 @@ function bindFooterActions() {
 }
 
 function openDashboard(section) {
-  const url = browser.runtime.getURL('options/options.html') +
+  const url = browser.runtime.getURL('html/options.html') +
     (section ? `?section=${section}` : '');
   browser.tabs.create({ url });
   window.close();
