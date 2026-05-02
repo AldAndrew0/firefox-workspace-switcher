@@ -1,28 +1,24 @@
 /* ============================================================
-   _root.css — Reset globale + variabili accent condivise
+   _spinner.css — Spinner di caricamento
    Importato da: css/pages/popup.css, css/pages/options.css
+   Richiede: --accent (da _root.css), --text (dalla pagina)
    ============================================================ */
 
-/* ── Reset ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-/* ── Variabili condivise ── */
-:root {
-  /* Accent: variabili Mozilla native, disponibili in tutti i contesti dell'estensione */
-  --accent:     -moz-accent-color;
-  --accent-txt: -moz-accent-color-text;
-
-  /* Tipografia base */
-  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid color-mix(in srgb, var(--text) 20%, transparent);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
 }
 
-/* ── Base tipografia ── */
-html {
-  font-family: var(--font);
-  line-height: 1.5;
-  -webkit-font-smoothing: antial
+.loading {
+  padding: 28px;
+  display: flex;
+  justify-content: center;
 }
